@@ -1,0 +1,13 @@
+﻿.mode {
+    cursor: pointer;
+}
+
+.mode:hover {
+    background-color: #4b9ef2;
+    color: #ffffff;
+}
+
+.selected {
+    background-color: #1b6ec2;
+    color: #ffffff;
+}

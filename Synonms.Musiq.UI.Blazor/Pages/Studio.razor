@@ -1,0 +1,116 @@
+﻿@page "/studio"
+
+<EditForm Model="@Selection" OnValidSubmit="@HandleValidSubmitAsync" OnInvalidSubmit="@HandleInvalidSubmitAsync">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="form-group row">
+        <label for="selectedRoot" class="col-sm-3">Root: </label>
+        <InputSelect @bind-Value="@Selection.Root">
+            <option selected value="">-- Select --</option>
+            @foreach (var intonation in Intonations)
+            {
+                <option value="@intonation">@intonation.ToString()</option>
+            }
+        </InputSelect>
+        <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => Selection.Root)" />
+    </div>
+
+    <div class="form-group row">
+        <label for="selectedRoot" class="col-sm-3">Scale: </label>
+        <InputSelect @bind-Value="@Selection.Scale">
+            <option selected value="">-- Select --</option>
+            @foreach (var scale in Scales)
+            {
+                <option value="@scale">@scale.ToString()</option>
+            }
+        </InputSelect>
+        <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => Selection.Scale)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary edit-btn">Mosh!</button>
+</EditForm>
+
+<br />
+
+@if (Selection.Key is null)
+{
+    <h3>Select key...</h3>
+}
+else
+{
+    <h3>@Selection.Key.Name</h3>
+
+    <div class="row">
+        <div class="col-2"> </div>
+        <div class="col-1">I</div>
+        <div class="col-1">II</div>
+        <div class="col-1">III</div>
+        <div class="col-1">IV</div>
+        <div class="col-1">V</div>
+        <div class="col-1">VI</div>
+        <div class="col-1">VII</div>
+    </div>
+
+    @foreach (var (degree, mode) in Selection.Key.Modes)
+    {
+        var modeIntonations = mode.Intervals.GetIntonations(Selection.Key.Root).ToList();
+
+        <div class="row mode @(Selection.SelectedDegree == degree ? "selected" : "")">
+            <div class="col-2" @onclick="(e => SelectMode(degree))">@degree  - @mode.Name</div>
+            <div class="col-1">
+                <Tooltip Text="@mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.I).ToString()">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="(e => PlayChord(mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.I)))">
+                        @modeIntonations[0].ToPrettyString()
+                    </button>
+                </Tooltip>
+            </div>
+            <div class="col-1">
+                <Tooltip Text="@mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.II).ToString()">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="(e => PlayChord(mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.II)))">
+                        @modeIntonations[1].ToPrettyString()
+                    </button>
+                </Tooltip>
+            </div>
+            <div class="col-1">
+                <Tooltip Text="@mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.III).ToString()">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="(e => PlayChord(mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.III)))">
+                        @modeIntonations[2].ToPrettyString()
+                    </button>
+                </Tooltip>
+            </div>
+            <div class="col-1">
+                <Tooltip Text="@mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.IV).ToString()">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="(e => PlayChord(mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.IV)))">
+                        @modeIntonations[3].ToPrettyString()
+                    </button>
+                </Tooltip>
+            </div>
+            <div class="col-1">
+                <Tooltip Text="@mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.V).ToString()">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="(e => PlayChord(mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.V)))">
+                        @modeIntonations[4].ToPrettyString()
+                    </button>
+                </Tooltip>
+            </div>
+            <div class="col-1">
+                <Tooltip Text="@mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.VI).ToString()">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="(e => PlayChord(mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.VI)))">
+                        @modeIntonations[5].ToPrettyString()
+                    </button>
+                </Tooltip>
+            </div>
+            <div class="col-1">
+                <Tooltip Text="@mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.VII).ToString()">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="(e => PlayChord(mode.Intervals.GetTriadChord(Selection.Key.Root, Degree.VII)))">
+                        @modeIntonations[6].ToPrettyString()
+                    </button>
+                </Tooltip>
+            </div>
+        </div>
+    }
+}
+
+<br />
+
+<Keyboard @ref="Keyboard"></Keyboard>
+
